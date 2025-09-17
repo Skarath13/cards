@@ -110,8 +110,8 @@ src/
 
 ### Daily Reset System
 - Automatic archival at midnight PST
-- Moves current transactions to archived_transactions table
-- Clears main transactions table for new business day
+- Moves current transactions to archived_transactions_cards table
+- Clears main transactions_cards table for new business day
 - Preserves all historical data
 
 ### Mobile Optimization
@@ -122,15 +122,17 @@ src/
 
 ## Database Schema
 
-### transactions
+### transactions_cards
 - Current day's transactions
 - Row Level Security enabled
 - User isolation by user_id
 
-### archived_transactions
+### archived_transactions_cards
 - Historical transaction data
-- Same structure as transactions + archived_at timestamp
+- Same structure as transactions_cards + archived_at timestamp
 - Read-only access for users
+
+**Note:** All tables use the `_cards` suffix to identify them as belonging to this project specifically, preventing conflicts with other projects in the same Supabase instance.
 
 ## Development
 

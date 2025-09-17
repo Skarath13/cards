@@ -12,7 +12,7 @@ export async function POST() {
 
     // Get all transactions for today
     const { data: transactions, error: selectError } = await supabase
-      .from('transactions')
+      .from('transactions_cards')
       .select('*')
       .eq('business_date', today)
 
@@ -23,7 +23,7 @@ export async function POST() {
     // Archive today's transactions if any exist
     if (transactions && transactions.length > 0) {
       const { error: archiveError } = await supabase
-        .from('archived_transactions')
+        .from('archived_transactions_cards')
         .insert(
           transactions.map(t => ({
             ...t,
@@ -37,7 +37,7 @@ export async function POST() {
 
       // Clear today's transactions
       const { error: deleteError } = await supabase
-        .from('transactions')
+        .from('transactions_cards')
         .delete()
         .eq('business_date', today)
 

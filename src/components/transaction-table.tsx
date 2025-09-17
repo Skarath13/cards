@@ -32,7 +32,7 @@ export function TransactionTable({ paymentType }: TransactionTableProps) {
       await supabase.rpc('set_current_user_id', { user_id: userId })
 
       const { data, error } = await supabase
-        .from('transactions')
+        .from('transactions_cards')
         .select('*')
         .eq('user_id', userId)
         .eq('payment_type', paymentType)
@@ -92,7 +92,7 @@ export function TransactionTable({ paymentType }: TransactionTableProps) {
         if (existing) {
           // Update existing
           const { error } = await supabase
-            .from('transactions')
+            .from('transactions_cards')
             .update({
               time: rowData.time || null,
               service: rowData.service || null,
@@ -108,7 +108,7 @@ export function TransactionTable({ paymentType }: TransactionTableProps) {
         } else {
           // Insert new
           const { error } = await supabase
-            .from('transactions')
+            .from('transactions_cards')
             .insert({
               user_id: userId,
               business_date: businessDate,

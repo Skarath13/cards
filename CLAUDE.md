@@ -55,10 +55,25 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ## Database Setup
 
 Run the SQL script in `supabase-setup.sql` in your Supabase SQL Editor to create:
-- `transactions` table for current day data
-- `archived_transactions` table for historical data
+- `transactions_cards` table for current day data
+- `archived_transactions_cards` table for historical data
 - Row Level Security policies
 - Helper functions for user context and daily archival
+
+### Database Naming Convention
+
+**IMPORTANT:** All database tables for this project use the `_cards` suffix to identify them as belonging to the Cards project specifically. This prevents conflicts with other projects in the same Supabase instance.
+
+**Table Naming Pattern:**
+- Main tables: `{table_name}_cards`
+- Examples: `transactions_cards`, `archived_transactions_cards`
+- Indexes: `idx_{table_name}_cards_{description}`
+- Functions: `{function_name}_cards()`
+
+This naming convention ensures:
+- Clear project identification in multi-project Supabase instances
+- No conflicts with existing tables
+- Easy identification and management of Cards-related data
 
 ## Architecture Notes
 
