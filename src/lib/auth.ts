@@ -1,29 +1,52 @@
 'use client'
 
+import { createClient } from './supabase'
+
 export class PinAuth {
-  private static readonly PIN_KEY = 'user_pin'
   private static readonly USER_ID_KEY = 'user_id'
+  private static readonly USER_DATA_KEY = 'user_data'
   private static readonly SESSION_KEY = 'session_active'
   private static readonly LAST_ACTIVITY_KEY = 'last_activity'
   private static readonly SESSION_TIMEOUT = 30 * 60 * 1000 // 30 minutes
 
-  static setPin(pin: string): string {
-    const userId = crypto.randomUUID()
-    localStorage.setItem(this.PIN_KEY, pin)
-    localStorage.setItem(this.USER_ID_KEY, userId)
+  static async setPin(pin: string): Promise<string | null> {
+    const supabase = createClient()
+
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, name, role, timezone, session_start_time, session_end_time')
+      .eq('pin_code', pin)
+      .single()
+
+    if (error || !user) {
+      return null
+    }
+
+    localStorage.setItem(this.USER_ID_KEY, user.id)
+    localStorage.setItem(this.USER_DATA_KEY, JSON.stringify(user))
     localStorage.setItem(this.SESSION_KEY, 'true')
     localStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString())
-    return userId
+    return user.id
   }
 
-  static verifyPin(pin: string): boolean {
-    const storedPin = localStorage.getItem(this.PIN_KEY)
-    if (storedPin === pin) {
-      localStorage.setItem(this.SESSION_KEY, 'true')
-      localStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString())
-      return true
+  static async verifyPin(pin: string): Promise<boolean> {
+    const supabase = createClient()
+
+    const { data: user, error } = await supabase
+      .from('users')
+      .select('id, name, role, timezone, session_start_time, session_end_time')
+      .eq('pin_code', pin)
+      .single()
+
+    if (error || !user) {
+      return false
     }
-    return false
+
+    localStorage.setItem(this.USER_ID_KEY, user.id)
+    localStorage.setItem(this.USER_DATA_KEY, JSON.stringify(user))
+    localStorage.setItem(this.SESSION_KEY, 'true')
+    localStorage.setItem(this.LAST_ACTIVITY_KEY, Date.now().toString())
+    return true
   }
 
   static isAuthenticated(): boolean {
@@ -51,7 +74,7 @@ export class PinAuth {
   }
 
   static hasPin(): boolean {
-    return !!localStorage.getItem(this.PIN_KEY)
+    return true // Always allow PIN entry since users exist in database
   }
 
   static logout(): void {
@@ -60,9 +83,15 @@ export class PinAuth {
   }
 
   static clearAll(): void {
-    localStorage.removeItem(this.PIN_KEY)
     localStorage.removeItem(this.USER_ID_KEY)
+    localStorage.removeItem(this.USER_DATA_KEY)
     localStorage.removeItem(this.SESSION_KEY)
     localStorage.removeItem(this.LAST_ACTIVITY_KEY)
+  }
+
+  static getUserData(): { id: string; name: string; role: string; timezone: string } | null {
+    if (!this.isAuthenticated()) return null
+    const userData = localStorage.getItem(this.USER_DATA_KEY)
+    return userData ? JSON.parse(userData) : null
   }
 }

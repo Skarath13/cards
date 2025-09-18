@@ -16,9 +16,11 @@ export function Dashboard({ onLogout }: DashboardProps) {
   const [activeTab, setActiveTab] = useState<'card' | 'cash'>('card')
   const [privacyMode, setPrivacyMode] = useState(false)
   const [currentDate, setCurrentDate] = useState('')
+  const [userData, setUserData] = useState<{ id: string; name: string; role: string; timezone: string } | null>(null)
 
   useEffect(() => {
     setCurrentDate(getCurrentBusinessDate())
+    setUserData(PinAuth.getUserData())
 
     // Check authentication periodically
     const authCheck = setInterval(() => {
@@ -58,6 +60,14 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 <Calendar className="h-4 w-4 mr-2" />
                 <span>{formatDisplayDate(currentDate)}</span>
               </div>
+              {userData && (
+                <div className="flex items-center text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">
+                  <span className="font-medium">{userData.name}</span>
+                  <span className="ml-2 text-xs bg-blue-100 px-2 py-0.5 rounded uppercase tracking-wide">
+                    {userData.role}
+                  </span>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center space-x-2">

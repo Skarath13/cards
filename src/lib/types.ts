@@ -27,7 +27,14 @@ export interface TransactionInput {
 
 export interface User {
   id: string
+  name: string
   pin_code: string
+  role: 'admin' | 'manager' | 'technician'
+  allowed_locations: string[] | null
   created_at: string
-  last_login?: string
+  updated_at: string
+  auth_user_id: string | null
+  session_start_time: string
+  session_end_time: string
+  timezone: string
 }

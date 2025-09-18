@@ -21,7 +21,7 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
     setIsSetup(PinAuth.hasPin())
   }, [])
 
-  const handleSetupPin = () => {
+  const handleSetupPin = async () => {
     if (pin.length < 4) {
       setError('PIN must be at least 4 digits')
       return
@@ -34,16 +34,20 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
 
     setLoading(true)
     try {
-      PinAuth.setPin(pin)
-      onAuthenticated()
+      const userId = await PinAuth.setPin(pin)
+      if (userId) {
+        onAuthenticated()
+      } else {
+        setError('Invalid PIN')
+      }
     } catch {
-      setError('Failed to set up PIN')
+      setError('Failed to verify PIN')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (pin.length < 4) {
       setError('Please enter your PIN')
       return
@@ -51,7 +55,8 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
 
     setLoading(true)
     try {
-      if (PinAuth.verifyPin(pin)) {
+      const success = await PinAuth.verifyPin(pin)
+      if (success) {
         onAuthenticated()
       } else {
         setError('Invalid PIN')
@@ -88,7 +93,7 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
             Cards
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            {isSetup ? 'Enter your PIN to continue' : 'Set up your 4-digit PIN'}
+            Enter your 4-digit PIN to continue
           </p>
         </div>
 
@@ -99,29 +104,14 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
                 type="text"
                 inputMode="numeric"
                 pattern="[0-9]*"
-                placeholder={isSetup ? "Enter PIN" : "Create PIN (4+ digits)"}
+                placeholder="Enter PIN"
                 value={pin}
                 onChange={(e) => handlePinChange(e.target.value)}
-                maxLength={8}
+                maxLength={4}
                 className="h-14 text-center text-2xl tracking-widest"
                 autoFocus
               />
             </div>
-
-            {!isSetup && (
-              <div>
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  placeholder="Confirm PIN"
-                  value={confirmPin}
-                  onChange={(e) => handleConfirmPinChange(e.target.value)}
-                  maxLength={8}
-                  className="h-14 text-center text-2xl tracking-widest"
-                />
-              </div>
-            )}
           </div>
 
           {error && (
@@ -131,32 +121,15 @@ export function PinAuthComponent({ onAuthenticated }: PinAuthProps) {
           )}
 
           <Button
-            onClick={isSetup ? handleLogin : handleSetupPin}
-            disabled={loading || pin.length < 4 || (!isSetup && confirmPin.length < 4)}
+            onClick={handleLogin}
+            disabled={loading || pin.length < 4}
             className="w-full h-14 text-lg"
           >
-            {loading ? 'Loading...' : (isSetup ? 'Enter' : 'Set Up PIN')}
+            {loading ? 'Loading...' : 'Enter'}
           </Button>
-
-          {isSetup && (
-            <Button
-              variant="ghost"
-              onClick={() => {
-                PinAuth.clearAll()
-                setIsSetup(false)
-                setPin('')
-                setConfirmPin('')
-                setError('')
-              }}
-              className="w-full text-sm"
-            >
-              Reset PIN
-            </Button>
-          )}
         </div>
 
         <div className="text-center text-xs text-gray-500">
-          <p>Your PIN is stored locally on this device</p>
           <p>Session expires after 30 minutes of inactivity</p>
         </div>
       </div>
