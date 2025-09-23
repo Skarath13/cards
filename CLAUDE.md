@@ -136,11 +136,27 @@ src/
 
 ## Deployment
 
-Optimized for Vercel deployment with:
-- Automatic builds on git push
-- Environment variable management
-- Edge functions for API routes
+### Vercel (Recommended)
+Optimized for Vercel deployment with zero configuration:
+- Automatic Next.js detection and builds on git push
+- Environment variable management through dashboard
+- Serverless functions for API routes
+- PWA support with service worker
+- Global CDN with edge caching
 - Static generation where possible
+
+#### Deployment Steps:
+1. Connect GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push
+
+#### Required Environment Variables:
+```
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+CRON_SECRET=your-secure-cron-secret
+```
 
 ## Performance Features
 

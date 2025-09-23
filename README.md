@@ -5,21 +5,24 @@ A mobile-first Progressive Web App for tracking daily financial transactions wit
 ## Features
 
 - 📱 **Mobile-Optimized PWA** - Install on iOS/Android devices
-- 🔐 **PIN Authentication** - Secure 4-digit PIN with 30-min auto-logout
+- 🔐 **PIN Authentication** - Secure PIN with 30-min auto-logout
 - 💳 **Dual Transaction Types** - Separate Card and Cash transaction tracking
+- 🎯 **Multi-Tier Service Selection** - Smart toggle system (Full Set/Refill/Other → Natural/Elegant/Mega → Timeline)
 - ➕ **Dynamic Rows** - Add/remove transaction rows as needed
+- 🔒 **Lock/Unlock Turns** - Prevent accidental edits per transaction
 - 🌙 **Midnight Auto-Reset** - Automatic daily archival at midnight PST
-- 👁️ **Privacy Mode** - Hide sensitive data with one click
-- 📱 **Touch-Optimized** - 44px touch targets for mobile usability
+- 📱 **Touch-Optimized** - 44px touch targets with swipe navigation
 - 💾 **Auto-Save** - Debounced saving as you type
+- 🎨 **Animated UI** - Smooth transitions and button animations
 
 ## Tech Stack
 
 - **Frontend:** Next.js 15, TypeScript, Tailwind CSS
-- **UI Components:** Radix UI, Lucide React icons
-- **Database:** Supabase (PostgreSQL)
+- **UI Components:** Radix UI, Lucide React icons, Phosphor Icons
+- **Database:** Supabase (PostgreSQL with Row Level Security)
 - **Authentication:** Custom PIN-based system (bypasses Supabase Auth)
 - **PWA:** next-pwa for offline functionality
+- **Utilities:** lodash for debouncing, mathjs for calculations
 
 ## Setup Instructions
 
@@ -103,10 +106,13 @@ src/
 - Auto-logout on inactivity
 
 ### Transaction Management
-- Dynamic row system (start with 12, add/remove as needed)
-- Real-time auto-save with debouncing
+- Dynamic row system (start with 1, add/remove as needed)
+- Multi-tier service selection with colored bubble tags
+- Real-time auto-save with debouncing (200ms)
 - Separate tracking for Card vs Cash transactions
-- Time, Service, Amount, Tips, and Note fields
+- Lock/unlock individual transactions to prevent accidental edits
+- Numeric-only validation for amount and tips fields
+- Service, Amount, Tips, and Note fields
 
 ### Daily Reset System
 - Automatic archival at midnight PST
@@ -153,14 +159,23 @@ npm run lint
 ## Deployment
 
 ### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+Optimized for zero-configuration deployment:
 
-### Manual Deployment
-1. Run `npm run build`
-2. Deploy the `.next` folder to your hosting provider
-3. Set up environment variables on your server
+1. **Connect Repository**: Link your GitHub repository to Vercel
+2. **Environment Variables**: Add in Vercel dashboard:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   CRON_SECRET=your-secure-cron-secret
+   ```
+3. **Deploy**: Automatic builds on push to main branch
+
+### Features on Vercel:
+- Serverless functions for API routes
+- Global CDN with edge caching
+- Automatic HTTPS and custom domains
+- PWA support with service worker
 
 ## Security Notes
 
