@@ -6,6 +6,7 @@ import { getCurrentBusinessDate } from '@/lib/utils'
 import { TransactionTable } from './transaction-table'
 import { Button } from '@/components/ui/button'
 import { LogOut, Calendar, CreditCard, Banknote, Plus } from 'lucide-react'
+import { Wallet } from '@phosphor-icons/react'
 
 interface DashboardProps {
   onLogout: () => void
@@ -110,7 +111,10 @@ export function Dashboard({ onLogout }: DashboardProps) {
             <div className="flex justify-between items-center">
               <div className="flex flex-col space-y-2">
                 <div className="flex items-center space-x-4">
-                  <h1 className="text-2xl font-bold text-gray-900">Cards</h1>
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <Wallet size={24} weight="duotone" color="#2563eb" />
+                  </div>
+                  <h1 className="text-2xl font-bold text-gray-900">Turns</h1>
                   {userData && (
                     <div className="flex items-center text-sm text-gray-600 bg-blue-50 px-3 py-1 rounded-full">
                       <span className="font-medium">{userData.name}</span>
@@ -147,7 +151,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={() => switchTab('card')}
-                className={`flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
                   activeTab === 'card'
                     ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/25'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -158,7 +162,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
               </button>
               <button
                 onClick={() => switchTab('cash')}
-                className={`flex items-center justify-center gap-3 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
+                className={`flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-semibold transition-all duration-300 ${
                   activeTab === 'cash'
                     ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/25'
                     : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -197,10 +201,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                           <div className="p-2 bg-white/20 rounded-lg">
                             <CreditCard className="h-6 w-6 text-white" />
                           </div>
-                          <div>
-                            <h2 className="text-xl font-bold text-white">Card Transactions</h2>
-                            <p className="text-blue-100 text-sm">Track your card payments</p>
-                          </div>
+                          <span className="text-white font-semibold text-lg">Card</span>
                         </div>
                         {activeTab === 'card' && (
                           <Button
@@ -234,10 +235,7 @@ export function Dashboard({ onLogout }: DashboardProps) {
                           <div className="p-2 bg-white/20 rounded-lg">
                             <Banknote className="h-6 w-6 text-white" />
                           </div>
-                          <div>
-                            <h2 className="text-xl font-bold text-white">Cash Transactions</h2>
-                            <p className="text-emerald-100 text-sm">Track your cash payments</p>
-                          </div>
+                          <span className="text-white font-semibold text-lg">Cash</span>
                         </div>
                         {activeTab === 'cash' && (
                           <Button

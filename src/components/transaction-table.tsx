@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Plus, Minus, Trash2, Lock, Unlock } from 'lucide-react'
 import { debounce } from 'lodash'
+import { ServiceSelector } from './service-selector'
 
 interface TransactionTableProps {
   paymentType: 'card' | 'cash'
@@ -179,6 +180,12 @@ export function TransactionTable({ paymentType, addRowTrigger }: TransactionTabl
   )
 
   const handleCellChange = (entryNumber: number, field: keyof TransactionInput, value: string | number) => {
+    // For numeric fields, only allow numbers and decimal points
+    if ((field === 'cash_amount' || field === 'card_amount' || field === 'tips') && typeof value === 'string') {
+      const numericValue = value.replace(/[^0-9.]/g, '')
+      value = numericValue
+    }
+
     // Optimistically update the local state first
     setTransactions(prevTransactions => {
       const existingIndex = prevTransactions.findIndex(t => t.entry_number === entryNumber)
@@ -413,16 +420,9 @@ export function TransactionTable({ paymentType, addRowTrigger }: TransactionTabl
                 Turn {row.entry_number}
               </div>
               <div className="p-1">
-                <Input
-                  type="text"
-                  inputMode="text"
+                <ServiceSelector
                   value={row.service || ''}
-                  onChange={(e) => handleCellChange(row.entry_number, 'service', e.target.value)}
-                  placeholder="Service"
-                  className="h-11 text-sm border-0 shadow-none focus:ring-1"
-                  autoComplete="off"
-                  autoCorrect="on"
-                  autoCapitalize="sentences"
+                  onChange={(value) => handleCellChange(row.entry_number, 'service', value)}
                   disabled={lockedTurns.has(row.entry_number)}
                 />
               </div>
@@ -545,16 +545,9 @@ export function TransactionTable({ paymentType, addRowTrigger }: TransactionTabl
             <div className="space-y-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1">Service</label>
-                <Input
-                  type="text"
-                  inputMode="text"
+                <ServiceSelector
                   value={row.service || ''}
-                  onChange={(e) => handleCellChange(row.entry_number, 'service', e.target.value)}
-                  placeholder="Service"
-                  className="h-12 text-base border focus:ring-2"
-                  autoComplete="off"
-                  autoCorrect="on"
-                  autoCapitalize="sentences"
+                  onChange={(value) => handleCellChange(row.entry_number, 'service', value)}
                   disabled={lockedTurns.has(row.entry_number)}
                 />
               </div>
