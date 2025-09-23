@@ -157,12 +157,12 @@ export function TransactionTable({ paymentType, addRowTrigger }: TransactionTabl
         console.error('Full error object:', JSON.stringify(error, null, 2))
         console.error('Error type:', typeof error)
         console.error('Error details:', {
-          message: error?.message,
-          code: error?.code,
-          details: error?.details,
-          hint: error?.hint,
-          name: error?.name,
-          stack: error?.stack,
+          message: (error as Error)?.message,
+          code: (error as { code?: string })?.code,
+          details: (error as { details?: string })?.details,
+          hint: (error as { hint?: string })?.hint,
+          name: (error as Error)?.name,
+          stack: (error as Error)?.stack,
           rowData,
           userId,
           businessDate,
